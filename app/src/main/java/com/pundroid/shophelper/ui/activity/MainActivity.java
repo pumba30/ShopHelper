@@ -46,14 +46,14 @@ public class MainActivity extends AppCompatActivity {
                 if (user != null) {
                     String nameUser = user.getDisplayName();
                     if (nameUser != null) {
-                        String title = nameUser.split("\\s")[0] + "'s Lists";
+                        String title = nameUser.split("\\s")[0] + getString(R.string.add_s_lists_to_owner);
                         setTitle(title);
                     } else {
                         SharedPreferences preferences =
                                 PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                         String title = preferences.getString(Constants.KEY_NAME_OWNER_LIST, "");
                         // TODO: 14.06.2016 title == "" fix it
-                        setTitle(title + "'s Lists");
+                        setTitle(title + getString(R.string.add_s_lists_to_owner));
                     }
                 }
             }

@@ -208,6 +208,7 @@
     <string name="enter_valid_email">Please, enter valid email.</string>
     <string name="internet_connection_failed">Internet connection failed</string>
     <string name="auth_successful">Authentication successful.</string>
+    <string name="add_s_lists_to_owner">\'s Lists</string>
 
 
     <!-- Values -->
