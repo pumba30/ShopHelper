@@ -63,7 +63,6 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        /* Inflate the menu; this adds items to the action bar if it is present. */
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
@@ -72,9 +71,7 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_logout) {
-            //clear user data
             clearUserData();
-
             //logout from Firebase
             FirebaseAuth.getInstance().signOut();
             Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
@@ -91,71 +88,40 @@ public class MainActivity extends AppCompatActivity {
         editor.clear().apply();
     }
 
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-    }
-
     private void initializeScreen() {
         ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
         Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
         setSupportActionBar(toolbar);
-        /**
-         * Create SectionPagerAdapter, set it as adapter to viewPager with setOffscreenPageLimit(2)
-         **/
+
         SectionPagerAdapter adapter = new SectionPagerAdapter(getSupportFragmentManager());
         assert viewPager != null;
         viewPager.setOffscreenPageLimit(2);
         viewPager.setAdapter(adapter);
-        /**
-         * Setup the mTabLayout with view pager
-         */
+
         assert tabLayout != null;
         tabLayout.setupWithViewPager(viewPager);
     }
 
-    /**
-     * Create an instance of the AddList dialog fragment and show it
-     */
     public void showAddListDialog(View view) {
-        /* Create an instance of the dialog fragment and show it */
         DialogFragment dialog = AddListDialogFragment.newInstance();
         dialog.show(MainActivity.this.getSupportFragmentManager(), "AddListDialogFragment");
     }
 
-    /**
-     * Create an instance of the AddMeal dialog fragment and show it
-     */
     public void showAddMealDialog(View view) {
-        /* Create an instance of the dialog fragment and show it */
         DialogFragment dialog = AddMealDialogFragment.newInstance();
         dialog.show(MainActivity.this.getSupportFragmentManager(), "AddMealDialogFragment");
     }
 
-    /**
-     * SectionPagerAdapter class that extends FragmentStatePagerAdapter to save fragments state
-     */
     public class SectionPagerAdapter extends FragmentStatePagerAdapter {
 
         public SectionPagerAdapter(FragmentManager fm) {
             super(fm);
         }
 
-        /**
-         * Use positions (0 and 1) to find and instantiate fragments with newInstance()
-         *
-         * @param position
-         */
         @Override
         public Fragment getItem(int position) {
-
-            Fragment fragment = null;
-
-            /**
-             * Set fragment to different fragments depending on position in ViewPager
-             */
+            Fragment fragment;
             switch (position) {
                 case 0:
                     fragment = ShoppingListsFragment.newInstance();
@@ -176,11 +142,7 @@ public class MainActivity extends AppCompatActivity {
             return 2;
         }
 
-        /**
-         * Set string resources as titles for each fragment by it's position
-         *
-         * @param position
-         */
+
         @Override
         public CharSequence getPageTitle(int position) {
             switch (position) {
