@@ -31,7 +31,7 @@ public class ShoppingListsFragment extends Fragment {
     public static final String TAG = ShoppingListsFragment.class.getSimpleName();
     private ListView mListView;
     private ActiveListAdapter mListAdapter;
-    private boolean mIsUserOwner = false;
+    private boolean mIsUserOwner;
 
     public ShoppingListsFragment() {
     }
@@ -70,21 +70,16 @@ public class ShoppingListsFragment extends Fragment {
                 Toast.makeText(getActivity(), "Open the list details", Toast.LENGTH_SHORT).show();
                 ShoppingList list = mListAdapter.getItem(position);
                 String ownerList = list.getOwner();
-                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+                SharedPreferences preferences =
+                        PreferenceManager.getDefaultSharedPreferences(getActivity());
                 String currentUser = preferences.getString(Constants.KEY_EMAIL, "");
-                if (ownerList.equals(currentUser)) {
-                    mIsUserOwner = true;
-                }
-                if (list != null) {
-                    Intent intent = new Intent(getActivity(), ActiveListDetailsActivity.class);
+                mIsUserOwner = ownerList.equals(currentUser);
 
-                    String listId = mListAdapter.getRef(position).getKey();
-                    intent.putExtra(Constants.KEY_LIST_ID, listId);
-                    // TODO: 14.06.2016 get value mIsUserOwner in ActivlistDetailActivity and use it
-
-                    intent.putExtra(Constants.KEY_IS_USER_OWNER, mIsUserOwner);
-                    startActivity(intent);
-                }
+                Intent intent = new Intent(getActivity(), ActiveListDetailsActivity.class);
+                String listId = mListAdapter.getRef(position).getKey();
+                intent.putExtra(Constants.KEY_LIST_ID, listId);
+                intent.putExtra(Constants.KEY_IS_USER_OWNER, mIsUserOwner);
+                startActivity(intent);
             }
         });
 

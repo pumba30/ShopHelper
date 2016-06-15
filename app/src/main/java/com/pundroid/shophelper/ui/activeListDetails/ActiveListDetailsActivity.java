@@ -28,11 +28,12 @@ import com.pundroid.shophelper.utils.Constants;
  */
 public class ActiveListDetailsActivity extends BaseActivity {
     private static final String LOG_TAG = ActiveListDetailsActivity.class.getSimpleName();
+
     private ListView mListView;
     private ShoppingList mShoppingList;
-    private String mShoppingListId;
     private ActiveListItemAdapter mActiveListItemAdapter;
-
+    private String mShoppingListId;
+    private boolean mIsUserOwner;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -40,16 +41,13 @@ public class ActiveListDetailsActivity extends BaseActivity {
         setContentView(R.layout.activity_active_list_details);
         Intent intent = getIntent();
         mShoppingListId = intent.getStringExtra(Constants.KEY_LIST_ID);
+        mIsUserOwner = intent.getBooleanExtra(Constants.KEY_IS_USER_OWNER, false);
         if (mShoppingListId == null) {
             finish();
             return;
         }
 
-        /**
-         * Link layout elements from XML and setup the toolbar
-         */
         initializeScreen();
-
 
         final DatabaseReference ref = FirebaseDatabase.getInstance()
                 .getReference(Constants.FIREBASE_LOCATION_SHOPPING_LIST_ITEMS).child(mShoppingListId);
@@ -73,19 +71,16 @@ public class ActiveListDetailsActivity extends BaseActivity {
             }
 
             @Override
-            public void onCancelled(FirebaseError firebaseError) {
-
-            }
+            public void onCancelled(FirebaseError firebaseError) {/*empty*/}
         });
 
-        /* Calling invalidateOptionsMenu causes onCreateOptionsMenu to be called */
         invalidateOptionsMenu();
 
         mListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
 
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                /* Check that the view is not the empty footer item */
+                // Check that the view is not the empty footer item
                 if (view.getId() != R.id.list_view_footer_empty) {
                     String itemId = mActiveListItemAdapter.getRef(position).getKey();
                     String itemName = mActiveListItemAdapter.getItem(position).getName();
@@ -106,13 +101,17 @@ public class ActiveListDetailsActivity extends BaseActivity {
         MenuItem share = menu.findItem(R.id.action_share_list);
         MenuItem archive = menu.findItem(R.id.action_archive);
 
-
-
-
-        remove.setVisible(true);
-        edit.setVisible(true);
-        share.setVisible(false);
-        archive.setVisible(false);
+        if (mIsUserOwner) {
+            remove.setVisible(true);
+            edit.setVisible(true);
+            share.setVisible(true);
+            archive.setVisible(true);
+        } else {
+            remove.setVisible(false);
+            edit.setVisible(false);
+            share.setVisible(false);
+            archive.setVisible(false);
+        }
 
         return true;
     }
@@ -121,32 +120,24 @@ public class ActiveListDetailsActivity extends BaseActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        /**
-         * Show edit list dialog when the edit action is selected
-         */
+        //Show edit list dialog when the edit action is selected
         if (id == R.id.action_edit_list_name) {
             showEditListNameDialog();
             return true;
         }
 
-        /**
-         * removeList() when the remove action is selected
-         */
+        // removeList() when the remove action is selected
         if (id == R.id.action_remove_list) {
             removeList();
             return true;
         }
 
-        /**
-         * Eventually we'll add this
-         */
+        //Eventually we'll add this
         if (id == R.id.action_share_list) {
             return true;
         }
 
-        /**
-         * archiveList() when the archive action is selected
-         */
+        //archiveList() when the archive action is selected
         if (id == R.id.action_archive) {
             archiveList();
             return true;
@@ -165,15 +156,10 @@ public class ActiveListDetailsActivity extends BaseActivity {
         mActiveListItemAdapter.cleanup();
     }
 
-    /**
-     * Link layout elements from XML and setup the toolbar
-     */
     private void initializeScreen() {
         mListView = (ListView) findViewById(R.id.list_view_shopping_list_items);
         Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
-        /* Common toolbar setup */
         setSupportActionBar(toolbar);
-        /* Add back button to the action bar */
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             setTitleListNameToActionBar();

@@ -21,10 +21,10 @@ import com.pundroid.shophelper.utils.Constants;
  * Created by pumba30 on 30.05.2016.
  */
 public abstract class EditListDialogFragment extends DialogFragment {
-    EditText mEditTextForList;
-    int mResource;
-    String mListId;
-    String mItemId;
+    protected EditText mEditTextForList;
+    private int mResource;
+    protected String mListId;
+    protected String mItemId;
 
     /**
      * Helper method that creates a basic bundle of all of the information needed to change

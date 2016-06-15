@@ -6,7 +6,6 @@ import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.firebase.client.Firebase;
 import com.firebase.client.ServerValue;
@@ -15,6 +14,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.pundroid.shophelper.R;
 import com.pundroid.shophelper.model.ShoppingListItem;
 import com.pundroid.shophelper.utils.Constants;
+import com.pundroid.shophelper.utils.Utils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -38,6 +38,7 @@ public class ActiveListItemAdapter extends FirebaseListAdapter<ShoppingListItem>
         TextView boughtByUser = (TextView) v.findViewById(R.id.text_view_bought_by_user);
         TextView itemName = (TextView) v.findViewById(R.id.text_view_active_list_item_name);
         ImageButton buttonRemoveItem = (ImageButton) v.findViewById(R.id.button_remove_item);
+        //if(m)
 
         final String itemId = this.getRef(position).getKey();
 
@@ -52,7 +53,7 @@ public class ActiveListItemAdapter extends FirebaseListAdapter<ShoppingListItem>
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 removeItem(itemId);
-                                Toast.makeText(mActivity, "REmove Item", Toast.LENGTH_SHORT).show();
+                                Utils.toast(mActivity, "Remove Item");
                             }
                         })
                         .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {

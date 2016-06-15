@@ -26,7 +26,6 @@ import com.pundroid.shophelper.ui.activeLists.ShoppingListsFragment;
 import com.pundroid.shophelper.ui.login.LoginActivity;
 import com.pundroid.shophelper.ui.meals.AddMealDialogFragment;
 import com.pundroid.shophelper.ui.meals.MealsFragment;
-import com.pundroid.shophelper.utils.Constants;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -38,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Log.d(LOG_TAG, "onCreate MainActivity");
+        //set title - owner's list name
         mAuth = FirebaseAuth.getInstance();
         mAuth.addAuthStateListener(new FirebaseAuth.AuthStateListener() {
             @Override
@@ -49,11 +49,13 @@ public class MainActivity extends AppCompatActivity {
                         String title = nameUser.split("\\s")[0] + getString(R.string.add_s_lists_to_owner);
                         setTitle(title);
                     } else {
-                        SharedPreferences preferences =
-                                PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-                        String title = preferences.getString(Constants.KEY_NAME_OWNER_LIST, "");
-                        // TODO: 14.06.2016 title == "" fix it
-                        setTitle(title + getString(R.string.add_s_lists_to_owner));
+                        String userEmail = user.getEmail();
+                        if (userEmail != null) {
+                            String title = user.getEmail().split("@")[0];
+                            setTitle(title + getString(R.string.add_s_lists_to_owner));
+                        } else {
+                            setTitle(getString(R.string.app_name));
+                        }
                     }
                 }
             }

@@ -3,6 +3,9 @@ package com.pundroid.shophelper.utils;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.widget.Toast;
+
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.text.SimpleDateFormat;
 
@@ -35,6 +38,20 @@ public class Utils {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString(keySharedPref, value).apply();
+    }
+
+    public static String getPreferencesValue(String key, String defValue, Context context) {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        return preferences.getString(key, defValue);
+    }
+
+    public static String getUserProviderId() {
+        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+        return firebaseAuth.getCurrentUser().getProviders().get(0);
+    }
+
+    public static void toast(Context context, String toast) {
+        Toast.makeText(context, toast, Toast.LENGTH_LONG).show();
     }
 
 }
