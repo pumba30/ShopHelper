@@ -11,7 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.database.DatabaseReference;
@@ -32,19 +31,11 @@ public class ShoppingListsFragment extends Fragment {
     public static final String TAG = ShoppingListsFragment.class.getSimpleName();
     private ListView mListView;
     private ActiveListAdapter mListAdapter;
-    private TextView mListNameTextView;
-    private TextView mTextViewOwner;
-    private TextView mTextViewTimeStamp;
     private boolean mIsUserOwner = false;
 
     public ShoppingListsFragment() {
-        /* Required empty public constructor */
     }
 
-    /**
-     * Create fragment and pass bundle with data as it's arguments
-     * Right now there are not arguments...but eventually there will be.
-     */
     public static ShoppingListsFragment newInstance() {
         ShoppingListsFragment fragment = new ShoppingListsFragment();
         Bundle args = new Bundle();
@@ -52,15 +43,6 @@ public class ShoppingListsFragment extends Fragment {
         return fragment;
     }
 
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-    }
-
-    /**
-     * Initialize instance variables with data from bundle
-     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,23 +53,17 @@ public class ShoppingListsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        /**
-         * Initalize UI elements
-         */
         View rootView = inflater.inflate(R.layout.fragment_shopping_lists, container, false);
         initializeScreen(rootView);
 
         final DatabaseReference ref = FirebaseDatabase.getInstance()
                 .getReference(Constants.FIREBASE_LOCATION_ACTIVE_LISTS);
-        Log.d(TAG, "LINK TO FIREDATABASE " + ref.toString());
+        Log.d(TAG, "Link to data firebase " + ref.toString());
 
         mListAdapter = new ActiveListAdapter(getActivity(),
                 ShoppingList.class, R.layout.single_active_list, ref);
         mListView.setAdapter(mListAdapter);
 
-        /**
-         * Set interactive bits, such as click events and adapters
-         */
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -121,9 +97,6 @@ public class ShoppingListsFragment extends Fragment {
         mListAdapter.cleanup();
     }
 
-    /**
-     * Link layout elements from XML
-     */
     private void initializeScreen(View rootView) {
         mListView = (ListView) rootView.findViewById(R.id.list_view_active_lists);
     }
@@ -133,9 +106,8 @@ public class ShoppingListsFragment extends Fragment {
             Log.d(TAG, "getDateLastChanged != null");
             return Utils.SIMPLE_DATE_FORMAT.format(new Date(shoppingList.getDateLastChangedLong()));
         } else {
-            Log.d(TAG, "HASH MAP NULL");
+            Log.d(TAG, "HashMap is null");
             return "";
         }
     }
-
 }
