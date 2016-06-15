@@ -25,11 +25,14 @@ import java.util.Map;
 public class ActiveListItemAdapter extends FirebaseListAdapter<ShoppingListItem> {
     private static final String LOG_TAG = ActiveListItemAdapter.class.getSimpleName();
     private DatabaseReference mRef;
+    private boolean mIsOwner;
 
-    public ActiveListItemAdapter(Activity activity, Class modelClass, int modelLayout, DatabaseReference ref) {
+    public ActiveListItemAdapter(Activity activity, Class modelClass, int modelLayout,
+                                 DatabaseReference ref, boolean isOwner) {
         super(activity, modelClass, modelLayout, ref);
         mActivity = activity;
         mRef = ref;
+        mIsOwner = isOwner;
     }
 
     @Override
@@ -37,9 +40,11 @@ public class ActiveListItemAdapter extends FirebaseListAdapter<ShoppingListItem>
 
         TextView boughtByUser = (TextView) v.findViewById(R.id.text_view_bought_by_user);
         TextView itemName = (TextView) v.findViewById(R.id.text_view_active_list_item_name);
-        ImageButton buttonRemoveItem = (ImageButton) v.findViewById(R.id.button_remove_item);
-        //if(m)
-
+        final ImageButton buttonRemoveItem = (ImageButton) v.findViewById(R.id.button_remove_item);
+        buttonRemoveItem.setVisibility(View.VISIBLE);
+        if (!mIsOwner) {
+            buttonRemoveItem.setVisibility(View.INVISIBLE);
+        }
         final String itemId = this.getRef(position).getKey();
 
         buttonRemoveItem.setOnClickListener(new View.OnClickListener() {
@@ -67,7 +72,6 @@ public class ActiveListItemAdapter extends FirebaseListAdapter<ShoppingListItem>
                 alertDialog.show();
             }
         });
-
 
         boughtByUser.setText(model.getOwner());
         itemName.setText(model.getName());

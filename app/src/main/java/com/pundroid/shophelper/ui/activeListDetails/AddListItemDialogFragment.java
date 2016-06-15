@@ -31,9 +31,6 @@ public class AddListItemDialogFragment extends EditListDialogFragment {
     private static final String LOG_TAG = AddListDialogFragment.class.getSimpleName();
     private String mUserEnteredNameItem;
 
-    /**
-     * Public static constructor that creates fragment and passes a bundle with data into it when adapter is created
-     */
     public static AddListItemDialogFragment newInstance(ShoppingList shoppingList, String listId) {
         AddListItemDialogFragment addListItemDialogFragment = new AddListItemDialogFragment();
 
@@ -42,7 +39,6 @@ public class AddListItemDialogFragment extends EditListDialogFragment {
 
         return addListItemDialogFragment;
     }
-
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -57,6 +53,7 @@ public class AddListItemDialogFragment extends EditListDialogFragment {
      */
     @Override
     protected void doListEdit() {
+
         mUserEnteredNameItem = mEditTextForList.getText().toString();
         if (mUserEnteredNameItem.equals("")) {
             this.getDialog().cancel();
@@ -68,7 +65,6 @@ public class AddListItemDialogFragment extends EditListDialogFragment {
                     String userOwner = firebaseAuth.getDisplayName();
                     createListItem(userOwner);
                 }
-
             } else if (providerId.equals(Constants.PASSWORD_PROVIDER_ID)) {
                 String encodedEmail = Utils.encodeEmail(
                         Utils.getPreferencesValue(Constants.KEY_EMAIL, "", getActivity()));

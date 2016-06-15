@@ -2,6 +2,7 @@ package com.pundroid.shophelper.ui.activeListDetails;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -29,6 +30,7 @@ import com.pundroid.shophelper.utils.Constants;
 public class ActiveListDetailsActivity extends BaseActivity {
     private static final String LOG_TAG = ActiveListDetailsActivity.class.getSimpleName();
 
+    private FloatingActionButton mAddItemToListButton;
     private ListView mListView;
     private ShoppingList mShoppingList;
     private ActiveListItemAdapter mActiveListItemAdapter;
@@ -52,7 +54,7 @@ public class ActiveListDetailsActivity extends BaseActivity {
         final DatabaseReference ref = FirebaseDatabase.getInstance()
                 .getReference(Constants.FIREBASE_LOCATION_SHOPPING_LIST_ITEMS).child(mShoppingListId);
         mActiveListItemAdapter = new ActiveListItemAdapter(this, ShoppingListItem.class,
-                R.layout.single_active_list_item, ref);
+                R.layout.single_active_list_item, ref, mIsUserOwner);
         mListView.setAdapter(mActiveListItemAdapter);
 
 
@@ -162,37 +164,30 @@ public class ActiveListDetailsActivity extends BaseActivity {
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            setTitleListNameToActionBar();
         }
         /* Inflate the footer, set root layout to null*/
         View footer = getLayoutInflater().inflate(R.layout.footer_empty, null);
         mListView.addFooterView(footer);
-
+        mAddItemToListButton = (FloatingActionButton) findViewById(R.id.fab_detail_add_item);
+        mAddItemToListButton.setVisibility(View.VISIBLE);
+        if (!mIsUserOwner) {
+            mAddItemToListButton.setVisibility(View.INVISIBLE);
+        }
+        mAddItemToListButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showAddListItemDialog();
+            }
+        });
     }
 
-    private void setTitleListNameToActionBar() {
-
-    }
+    public void archiveList() {/*emppty*/}
 
 
-    /**
-     * Archive current list when user selects "Archive" menu item
-     */
-    public void archiveList() {
-    }
+    public void addMeal(View view) {/*empty*/}
 
-    /**
-     * Start AddItemsFromMealActivity to add meal ingredients into the shopping list
-     * when the user taps on "add meal" fab
-     */
-    public void addMeal(View view) {
-    }
 
-    /**
-     * Remove current shopping list and its items from all nodes
-     */
     public void removeList() {
-        /* Create an instance of the dialog fragment and show it */
         DialogFragment dialog = RemoveListDialogFragment.newInstance(mShoppingList, mShoppingListId);
         dialog.show(getSupportFragmentManager(), "RemoveListDialogFragment");
     }
@@ -200,7 +195,7 @@ public class ActiveListDetailsActivity extends BaseActivity {
     /**
      * Show the add list item dialog when user taps "Add list item" fab
      */
-    public void showAddListItemDialog(View view) {
+    public void showAddListItemDialog() {
         /* Create an instance of the dialog fragment and show it */
         DialogFragment dialog = AddListItemDialogFragment.newInstance(mShoppingList, mShoppingListId);
         dialog.show(getSupportFragmentManager(), "AddListItemDialogFragment");
@@ -231,4 +226,6 @@ public class ActiveListDetailsActivity extends BaseActivity {
     public void toggleShopping(View view) {
 
     }
+
+
 }

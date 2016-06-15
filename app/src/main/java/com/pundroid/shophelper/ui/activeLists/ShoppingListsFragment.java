@@ -11,7 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -28,7 +27,7 @@ import java.util.Date;
  */
 public class ShoppingListsFragment extends Fragment {
 
-    public static final String TAG = ShoppingListsFragment.class.getSimpleName();
+    public static final String LOG_TAG = ShoppingListsFragment.class.getSimpleName();
     private ListView mListView;
     private ActiveListAdapter mListAdapter;
     private boolean mIsUserOwner;
@@ -58,7 +57,7 @@ public class ShoppingListsFragment extends Fragment {
 
         final DatabaseReference ref = FirebaseDatabase.getInstance()
                 .getReference(Constants.FIREBASE_LOCATION_ACTIVE_LISTS);
-        Log.d(TAG, "Link to data firebase " + ref.toString());
+        Log.d(LOG_TAG, "Link to data firebase " + ref.toString());
 
         mListAdapter = new ActiveListAdapter(getActivity(),
                 ShoppingList.class, R.layout.single_active_list, ref);
@@ -67,7 +66,7 @@ public class ShoppingListsFragment extends Fragment {
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(getActivity(), "Open the list details", Toast.LENGTH_SHORT).show();
+                Log.d(LOG_TAG, "Open the list details");
                 ShoppingList list = mListAdapter.getItem(position);
                 String ownerList = list.getOwner();
                 SharedPreferences preferences =
@@ -98,10 +97,10 @@ public class ShoppingListsFragment extends Fragment {
 
     private String getTextTimeStamp(ShoppingList shoppingList) {
         if (shoppingList.getDateLastChanged() != null) {
-            Log.d(TAG, "getDateLastChanged != null");
+            Log.d(LOG_TAG, "getDateLastChanged != null");
             return Utils.SIMPLE_DATE_FORMAT.format(new Date(shoppingList.getDateLastChangedLong()));
         } else {
-            Log.d(TAG, "HashMap is null");
+            Log.d(LOG_TAG, "HashMap is null");
             return "";
         }
     }

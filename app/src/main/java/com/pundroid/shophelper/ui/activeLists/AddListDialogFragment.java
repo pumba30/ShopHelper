@@ -2,9 +2,7 @@ package com.pundroid.shophelper.ui.activeLists;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.view.KeyEvent;
@@ -20,6 +18,7 @@ import com.firebase.client.ServerValue;
 import com.pundroid.shophelper.R;
 import com.pundroid.shophelper.model.ShoppingList;
 import com.pundroid.shophelper.utils.Constants;
+import com.pundroid.shophelper.utils.Utils;
 
 import java.util.HashMap;
 
@@ -50,9 +49,7 @@ public class AddListDialogFragment extends DialogFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        mOwner = preferences.getString(Constants.KEY_EMAIL, "");
+        mOwner = Utils.getPreferencesValue(Constants.KEY_EMAIL, "", getActivity());
     }
 
     /**

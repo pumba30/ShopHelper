@@ -8,6 +8,8 @@ import android.widget.Toast;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.text.SimpleDateFormat;
+import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by pumba30 on 29.05.2016.
@@ -18,17 +20,7 @@ public class Utils {
      * Format the date with SimpleDateFormat
      */
     public static final SimpleDateFormat SIMPLE_DATE_FORMAT =
-            new SimpleDateFormat("yyyy-MM-dd HH:mm");
-    private Context mContext;
-
-
-    /**
-     * Public constructor that takes mContext for later use
-     */
-    public Utils(Context context) {
-        mContext = context;
-    }
-
+            new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault());
 
     public static final String encodeEmail(String userEmail) {
         return userEmail.replace(".", ",");
@@ -47,7 +39,13 @@ public class Utils {
 
     public static String getUserProviderId() {
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-        return firebaseAuth.getCurrentUser().getProviders().get(0);
+        if (firebaseAuth.getCurrentUser() != null) {
+            List<String> providersIds = firebaseAuth.getCurrentUser().getProviders();
+            if (providersIds != null) {
+                return providersIds.get(0);
+            }
+        }
+        return "";
     }
 
     public static void toast(Context context, String toast) {
