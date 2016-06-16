@@ -1,4 +1,4 @@
-package com.pundroid.shophelper.ui.activeListDetails;
+package com.pundroid.shophelper.ui.activeListDetails.adapters;
 
 import android.app.Activity;
 import android.content.DialogInterface;
@@ -91,6 +91,5 @@ public class ActiveListItemAdapter extends FirebaseListAdapter<ShoppingListItem>
                 + "/" + Constants.FIREBASE_PROPERTY_TIMESTAMP_LAST_CHANGED, updateTimeStamp);
 
         ref.updateChildren(updatedRemoveItemMap);
-
     }
 }

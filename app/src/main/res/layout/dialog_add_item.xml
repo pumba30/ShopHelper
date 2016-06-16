@@ -8,7 +8,7 @@
                 android:paddingLeft="@dimen/activity_vertical_margin"
                 android:paddingRight="@dimen/activity_vertical_margin"
                 android:paddingTop="@dimen/activity_vertical_margin"
-                tools:context=".ui.activeListDetails.ActiveListDetailsActivity">
+                tools:context=".ui.activity.ActiveListDetailsActivity">
 
     <EditText
         android:id="@+id/edit_text_list_dialog"

@@ -21,11 +21,11 @@ import android.view.View;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.pundroid.shophelper.R;
-import com.pundroid.shophelper.ui.activeLists.AddListDialogFragment;
-import com.pundroid.shophelper.ui.activeLists.ShoppingListsFragment;
-import com.pundroid.shophelper.ui.login.LoginActivity;
-import com.pundroid.shophelper.ui.meals.AddMealDialogFragment;
-import com.pundroid.shophelper.ui.meals.MealsFragment;
+import com.pundroid.shophelper.ui.activeListDetails.fragments.AddListDialogFragment;
+import com.pundroid.shophelper.ui.activeListDetails.fragments.ShoppingListsFragment;
+import com.pundroid.shophelper.ui.activity.login.LoginActivity;
+import com.pundroid.shophelper.ui.activeListDetails.fragments.AddMealDialogFragment;
+import com.pundroid.shophelper.ui.activeListDetails.fragments.MealsFragment;
 
 public class MainActivity extends AppCompatActivity {
 

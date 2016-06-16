@@ -1,4 +1,4 @@
-package com.pundroid.shophelper.ui.login;
+package com.pundroid.shophelper.ui.activity.login;
 
 import android.app.ProgressDialog;
 import android.content.Intent;

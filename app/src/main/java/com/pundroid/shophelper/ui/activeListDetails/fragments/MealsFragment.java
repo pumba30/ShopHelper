@@ -1,4 +1,4 @@
-package com.pundroid.shophelper.ui.meals;
+package com.pundroid.shophelper.ui.activeListDetails.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;

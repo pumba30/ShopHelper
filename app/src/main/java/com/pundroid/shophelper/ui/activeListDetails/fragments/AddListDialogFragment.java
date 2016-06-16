@@ -1,4 +1,4 @@
-package com.pundroid.shophelper.ui.activeLists;
+package com.pundroid.shophelper.ui.activeListDetails.fragments;
 
 import android.app.Dialog;
 import android.content.DialogInterface;

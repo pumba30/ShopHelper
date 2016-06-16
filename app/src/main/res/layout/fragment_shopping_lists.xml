@@ -6,7 +6,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@color/grey"
-                tools:context=".ui.activeLists.ShoppingListsFragment">
+                tools:context=".ui.activeListDetails.fragments.ShoppingListsFragment">
 
     <LinearLayout
         android:layout_width="match_parent"

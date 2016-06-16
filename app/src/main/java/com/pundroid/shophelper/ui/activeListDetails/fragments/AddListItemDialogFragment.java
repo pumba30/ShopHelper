@@ -1,4 +1,4 @@
-package com.pundroid.shophelper.ui.activeListDetails;
+package com.pundroid.shophelper.ui.activeListDetails.fragments;
 
 import android.app.Dialog;
 import android.os.Bundle;
@@ -16,7 +16,6 @@ import com.pundroid.shophelper.R;
 import com.pundroid.shophelper.model.ShoppingList;
 import com.pundroid.shophelper.model.ShoppingListItem;
 import com.pundroid.shophelper.model.User;
-import com.pundroid.shophelper.ui.activeLists.AddListDialogFragment;
 import com.pundroid.shophelper.utils.Constants;
 import com.pundroid.shophelper.utils.Utils;
 

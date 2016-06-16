@@ -27,8 +27,8 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ServerValue;
 import com.pundroid.shophelper.R;
 import com.pundroid.shophelper.model.User;
-import com.pundroid.shophelper.ui.login.CreateAccountActivity;
-import com.pundroid.shophelper.ui.login.LoginActivity;
+import com.pundroid.shophelper.ui.activity.login.CreateAccountActivity;
+import com.pundroid.shophelper.ui.activity.login.LoginActivity;
 import com.pundroid.shophelper.utils.Constants;
 
 import java.util.HashMap;

@@ -1,4 +1,4 @@
-package com.pundroid.shophelper.ui.activeListDetails;
+package com.pundroid.shophelper.ui.activeListDetails.fragments;
 
 import android.app.Dialog;
 import android.os.Bundle;
@@ -10,6 +10,7 @@ import com.firebase.client.FirebaseError;
 import com.firebase.client.ServerValue;
 import com.pundroid.shophelper.R;
 import com.pundroid.shophelper.model.ShoppingList;
+import com.pundroid.shophelper.ui.activity.ActiveListDetailsActivity;
 import com.pundroid.shophelper.utils.Constants;
 
 import java.util.HashMap;

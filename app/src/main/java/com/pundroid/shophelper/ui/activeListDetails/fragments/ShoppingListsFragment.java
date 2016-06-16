@@ -1,4 +1,4 @@
-package com.pundroid.shophelper.ui.activeLists;
+package com.pundroid.shophelper.ui.activeListDetails.fragments;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -16,7 +16,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.pundroid.shophelper.R;
 import com.pundroid.shophelper.model.ShoppingList;
-import com.pundroid.shophelper.ui.activeListDetails.ActiveListDetailsActivity;
+import com.pundroid.shophelper.ui.activeListDetails.adapters.ActiveListAdapter;
+import com.pundroid.shophelper.ui.activity.ActiveListDetailsActivity;
 import com.pundroid.shophelper.utils.Constants;
 import com.pundroid.shophelper.utils.Utils;
 

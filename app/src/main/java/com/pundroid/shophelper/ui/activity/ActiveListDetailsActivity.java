@@ -1,4 +1,4 @@
-package com.pundroid.shophelper.ui.activeListDetails;
+package com.pundroid.shophelper.ui.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -21,7 +21,11 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.pundroid.shophelper.R;
 import com.pundroid.shophelper.model.ShoppingList;
 import com.pundroid.shophelper.model.ShoppingListItem;
-import com.pundroid.shophelper.ui.activity.BaseActivity;
+import com.pundroid.shophelper.ui.activeListDetails.adapters.ActiveListItemAdapter;
+import com.pundroid.shophelper.ui.activeListDetails.fragments.AddListItemDialogFragment;
+import com.pundroid.shophelper.ui.activeListDetails.fragments.EditListItemNameDialogFragment;
+import com.pundroid.shophelper.ui.activeListDetails.fragments.EditListNameDialogFragment;
+import com.pundroid.shophelper.ui.activeListDetails.fragments.RemoveListDialogFragment;
 import com.pundroid.shophelper.utils.Constants;
 
 /**
@@ -149,9 +153,6 @@ public class ActiveListDetailsActivity extends BaseActivity {
     }
 
 
-    /**
-     * Cleanup when the activity is destroyed.
-     */
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -181,7 +182,7 @@ public class ActiveListDetailsActivity extends BaseActivity {
         });
     }
 
-    public void archiveList() {/*emppty*/}
+    public void archiveList() {/*empty*/}
 
 
     public void addMeal(View view) {/*empty*/}
@@ -192,27 +193,24 @@ public class ActiveListDetailsActivity extends BaseActivity {
         dialog.show(getSupportFragmentManager(), "RemoveListDialogFragment");
     }
 
-    /**
-     * Show the add list item dialog when user taps "Add list item" fab
-     */
+
+    // Show the add list item dialog when user taps "Add list item" fab
     public void showAddListItemDialog() {
         /* Create an instance of the dialog fragment and show it */
         DialogFragment dialog = AddListItemDialogFragment.newInstance(mShoppingList, mShoppingListId);
         dialog.show(getSupportFragmentManager(), "AddListItemDialogFragment");
     }
 
-    /**
-     * Show edit list name dialog when user selects "Edit list name" menu item
-     */
+
+    // Show edit list name dialog when user selects "Edit list name" menu item
     public void showEditListNameDialog() {
         /* Create an instance of the dialog fragment and show it */
         DialogFragment dialog = EditListNameDialogFragment.newInstance(mShoppingList, mShoppingListId);
         dialog.show(getSupportFragmentManager(), "EditListNameDialogFragment");
     }
 
-    /**
-     * Show the edit list item name dialog after longClick on the particular item
-     */
+
+    // Show the edit list item name dialog after longClick on the particular item
     public void showEditListItemNameDialog(String itemName, String itemId) {
         /* Create an instance of the dialog fragment and show it */
         Log.d(LOG_TAG, "Create Dialog EditItemListName");
@@ -220,9 +218,8 @@ public class ActiveListDetailsActivity extends BaseActivity {
         dialog.show(getSupportFragmentManager(), "EditListItemNameDialogFragment");
     }
 
-    /**
-     * This method is called when user taps "Start/Stop shopping" button
-     */
+
+    //This method is called when user taps "Start/Stop shopping" button
     public void toggleShopping(View view) {
 
     }
