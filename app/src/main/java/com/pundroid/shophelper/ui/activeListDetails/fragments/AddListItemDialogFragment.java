@@ -56,7 +56,7 @@ public class AddListItemDialogFragment extends EditListDialogFragment {
         mUserEnteredNameItem = mEditTextForList.getText().toString();
         if (mUserEnteredNameItem.equals("")) {
             this.getDialog().cancel();
-        } else {
+        } else  {
             String providerId = Utils.getUserProviderId();
             if (providerId.equals(Constants.GOOGLE_PROVIDER_ID)) {
                 FirebaseUser firebaseAuth = FirebaseAuth.getInstance().getCurrentUser();

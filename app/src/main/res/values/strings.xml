@@ -209,6 +209,10 @@
     <string name="internet_connection_failed">Internet connection failed</string>
     <string name="auth_successful">Authentication successful.</string>
     <string name="add_s_lists_to_owner">\'s Lists</string>
+    <string name="create_account_successful">Create account successful.</string>
+    <string name="install_app_for_processing_email">Install the app for processing mail</string>
+    <string name="sign_in_cancelled">The sign in was cancelled. Make sure you\'re connected to the internet and try again.</string>
+    <string name="error_handling_sign_in">"Error handling the sign in: "</string>
 
 
     <!-- Values -->

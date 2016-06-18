@@ -8,6 +8,7 @@ import java.util.Map;
 public class User {
     private String email;
     private String name;
+    private boolean hasLoginWithPassword;
     private Map<String, Object> timestampJoined;
 
 
@@ -33,5 +34,11 @@ public class User {
         return timestampJoined;
     }
 
+    public boolean isHasLoginWithPassword() {
+        return hasLoginWithPassword;
+    }
 
+    public void setHasLoginWithPassword(boolean hasLoginWithPassword) {
+        this.hasLoginWithPassword = hasLoginWithPassword;
+    }
 }

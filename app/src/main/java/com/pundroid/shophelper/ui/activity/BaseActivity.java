@@ -30,6 +30,7 @@ import com.pundroid.shophelper.model.User;
 import com.pundroid.shophelper.ui.activity.login.CreateAccountActivity;
 import com.pundroid.shophelper.ui.activity.login.LoginActivity;
 import com.pundroid.shophelper.utils.Constants;
+import com.pundroid.shophelper.utils.Utils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -40,9 +41,12 @@ import java.util.regex.Pattern;
  */
 public class BaseActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
     private static final String LOG_TAG = BaseActivity.class.getSimpleName();
-    public static final int NUMBER_CHARACTERS = 6;
     protected GoogleApiClient mGoogleApiClient;
     protected FirebaseAuth.AuthStateListener mAuthListener;
+    protected String mUserName;
+    protected String mUserEmail;
+    protected String mUserPassword;
+    protected FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,15 +58,13 @@ public class BaseActivity extends AppCompatActivity implements GoogleApiClient.O
                 .requestEmail()
                 .build();
 
-        /**
-         * Build a GoogleApiClient with access to the Google Sign-In API and the
-         * options specified by gso.
-         */
+        //Build a GoogleApiClient with access to the Google Sign-In API and the options specified by gso.
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .enableAutoManage(this, this)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
 
+        mAuth = FirebaseAuth.getInstance();
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -71,7 +73,7 @@ public class BaseActivity extends AppCompatActivity implements GoogleApiClient.O
                     // User is signed in
                     Log.d(LOG_TAG, "onAuthStateChanged:signed_in:" + user.getUid());
                     Log.d(LOG_TAG, "User email: " + user.getEmail());
-                    startMainActivity();
+
                 } else {
 
                     Log.d(LOG_TAG, "onAuthStateChanged:signed_out");
@@ -80,17 +82,21 @@ public class BaseActivity extends AppCompatActivity implements GoogleApiClient.O
         };
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mAuth.addAuthStateListener(mAuthListener);
+    }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
+    protected void onStop() {
+        super.onStop();
+        mAuth.removeAuthStateListener(mAuthListener);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        /* Inflate the menu; this adds items to the action bar if it is present. */
         getMenuInflater().inflate(R.menu.menu_base, menu);
-
         return true;
     }
 
@@ -106,10 +112,7 @@ public class BaseActivity extends AppCompatActivity implements GoogleApiClient.O
     }
 
     protected void initializeBackground(LinearLayout linearLayout) {
-
-        /**
-         * Set different background image for landscape and portrait layouts
-         */
+        //Set different background image for landscape and portrait layouts
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
 
             linearLayout.setBackgroundResource(R.drawable.background_loginscreen_land);
@@ -127,24 +130,6 @@ public class BaseActivity extends AppCompatActivity implements GoogleApiClient.O
             valid = false;
         } else if (TextUtils.isEmpty(userEmail)) {
             editText.setError(getString(R.string.set_error_required));
-            valid = false;
-        } else {
-            editText.setError(null);
-        }
-        return valid;
-    }
-
-    protected boolean validateUserPassword(String userPassword, EditText editText) {
-        boolean valid = true;
-        if (TextUtils.isEmpty(userPassword)) {
-            editText.setError(getString(R.string.set_error_required));
-            valid = false;
-        } else {
-            editText.setError(null);
-        }
-
-        if (userPassword.length() < NUMBER_CHARACTERS) {
-            editText.setError(getString(R.string.the_password_must_have_at_least_6_characters));
             valid = false;
         } else {
             editText.setError(null);
@@ -176,9 +161,7 @@ public class BaseActivity extends AppCompatActivity implements GoogleApiClient.O
         }
     }
 
-    /**
-     * Creates a new user in Firebase from the Java POJO
-     */
+    //Creates a new user in Firebase from the Java POJO
     protected void createUserInFireBase(final String encodedEmail, final String userName) {
         final Firebase usersRef = new Firebase(Constants.FIREBASE_URL_USERS).child(encodedEmail);
         usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -187,8 +170,13 @@ public class BaseActivity extends AppCompatActivity implements GoogleApiClient.O
                 if (dataSnapshot != null) {
                     Map<String, Object> timestamp = new HashMap<>();
                     timestamp.put(Constants.FIREBASE_PROPERTY_TIMESTAMP, ServerValue.TIMESTAMP);
-
                     User newUser = new User(encodedEmail, userName, timestamp);
+                    if (Utils.getUserProviderId().equals(Constants.PASSWORD_PROVIDER_ID)) {
+                        newUser.setHasLoginWithPassword(true);
+                    } else {
+                        newUser.setHasLoginWithPassword(false);
+                    }
+
                     usersRef.setValue(newUser);
                 }
             }
@@ -210,7 +198,5 @@ public class BaseActivity extends AppCompatActivity implements GoogleApiClient.O
 
 
     @Override
-    public void onConnectionFailed(ConnectionResult connectionResult) {
-
-    }
+    public void onConnectionFailed(ConnectionResult connectionResult) {/*empty*/}
 }

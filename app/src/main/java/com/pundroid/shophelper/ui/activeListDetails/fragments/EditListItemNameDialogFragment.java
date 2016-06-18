@@ -60,7 +60,7 @@ public class EditListItemNameDialogFragment extends EditListDialogFragment {
      */
     protected void doListEdit() {
         String enteredUserItemName = mEditTextForList.getText().toString();
-        if (!enteredUserItemName.equals("") && !enteredUserItemName.equals(mItemName)) { //todo name
+        if (!enteredUserItemName.equals("") && !enteredUserItemName.equals(mItemName)) {
             Firebase ref = new Firebase(Constants.FIREBASE_URL);
             Map<String, Object> updateItemListName = new HashMap<>();
             updateItemListName.put("/" + Constants.FIREBASE_LOCATION_SHOPPING_LIST_ITEMS

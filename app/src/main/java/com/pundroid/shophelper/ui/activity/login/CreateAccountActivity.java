@@ -1,6 +1,7 @@
 package com.pundroid.shophelper.ui.activity.login;
 
 import android.app.ProgressDialog;
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -9,16 +10,18 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.Toast;
+import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
 import com.pundroid.shophelper.R;
 import com.pundroid.shophelper.ui.activity.BaseActivity;
 import com.pundroid.shophelper.utils.Constants;
 import com.pundroid.shophelper.utils.Utils;
+
+import java.math.BigInteger;
+import java.security.SecureRandom;
 
 /**
  * Created by pumba30 on 04.06.2016.
@@ -27,16 +30,14 @@ import com.pundroid.shophelper.utils.Utils;
 /**
  * Represents Sign up screen and functionality of the app
  */
-public class CreateAccountActivity extends BaseActivity {
+public class
+CreateAccountActivity extends BaseActivity {
     private static final String LOG_TAG = CreateAccountActivity.class.getSimpleName();
 
     private ProgressDialog mAuthProgressDialog;
-    private EditText mEditTextUsernameCreate, mEditTextEmailCreate, mEditTextPasswordCreate;
-    private FirebaseAuth mAuth;
-
-    private String mUserName;
-    private String mUserEmail;
-    private String mUserPassword;
+    private EditText mEditTextUsernameCreate, mEditTextEmailCreate;
+    private SecureRandom mRandom = new SecureRandom();
+    private TextView mSignInTextView;
 
 
     @Override
@@ -44,32 +45,24 @@ public class CreateAccountActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_account);
 
-        /**
-         * Link layout elements from XML and setup the progress dialog
-         */
         initializeScreen();
-        mAuth = FirebaseAuth.getInstance();
     }
 
-
-    /**
-     * Override onCreateOptionsMenu to inflate nothing
-     *
-     * @param menu The menu with which nothing will happen
-     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         return true;
     }
 
-
-    /**
-     * Link layout elements from XML and setup the progress dialog
-     */
     public void initializeScreen() {
         mEditTextUsernameCreate = (EditText) findViewById(R.id.edit_text_username_create);
         mEditTextEmailCreate = (EditText) findViewById(R.id.edit_text_email_create);
-        mEditTextPasswordCreate = (EditText) findViewById(R.id.edit_text_password_create);
+        mSignInTextView = (TextView) findViewById(R.id.tv_sign_in);
+        mSignInTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onSignInPressed();
+            }
+        });
         LinearLayout linearLayoutCreateAccountActivity
                 = (LinearLayout) findViewById(R.id.linear_layout_create_account_activity);
         initializeBackground(linearLayoutCreateAccountActivity);
@@ -81,10 +74,10 @@ public class CreateAccountActivity extends BaseActivity {
         mAuthProgressDialog.setCancelable(false);
     }
 
-    /**
-     * Open LoginActivity when user taps on "Sign in" textView
-     */
-    public void onSignInPressed(View view) {
+
+    //Open LoginActivity when user taps on "Sign in" textView
+
+    public void onSignInPressed() {
         Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
@@ -97,44 +90,75 @@ public class CreateAccountActivity extends BaseActivity {
     public void onCreateAccountPressed(final View view) {
         mUserName = mEditTextUsernameCreate.getText().toString();
         mUserEmail = mEditTextEmailCreate.getText().toString().toLowerCase();
-        mUserPassword = mEditTextPasswordCreate.getText().toString();
+        mUserPassword = new BigInteger(130, mRandom).toString(32);
+        Log.d(LOG_TAG, "User Password " + mUserPassword);
 
         Log.d(LOG_TAG, "createAccount:" + mUserEmail);
+
         if (!validateUserEmail(mUserEmail, mEditTextEmailCreate)
-                || !validateUserPassword(mUserPassword, mEditTextPasswordCreate)
                 || !validateUserName(mUserName, mEditTextUsernameCreate)) {
             return;
         }
 
         mAuthProgressDialog.show();
+        // START create user with email
 
-        // START create_user_with_email
         mAuth.createUserWithEmailAndPassword(mUserEmail, mUserPassword)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (!task.isSuccessful()) {
-                            String taskString = task.getException().toString();
-                            String message = taskString.substring(taskString.lastIndexOf(":")).replace(":", "");
-                            Toast.makeText(CreateAccountActivity.this, message, Toast.LENGTH_LONG).show();
-                        } else {
-                            Log.d(LOG_TAG, "createUserWithEmail:onComplete:" + task.isSuccessful());
-                            Toast.makeText(CreateAccountActivity.this, "Authentication successful.",
-                                    Toast.LENGTH_SHORT).show();
-                            createUserInFirebaseHelper();
+                        if (task.isSuccessful()) {
+                            resetPasswordInFirebase();
+                        }
+                    }
+                });
+    }
 
-                            startMainActivity();
+    private void resetPasswordInFirebase() {
+        mAuth.sendPasswordResetEmail(mUserEmail)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Utils.toast(getApplicationContext(), "Password sent to your email!");
+                            createUserInFirebaseHelper();
+                            Log.d(LOG_TAG, "createUserWithEmail:onComplete:" + task.isSuccessful());
+                            Utils.toast(getApplicationContext(),
+                                    getString(R.string.create_account_successful));
+                            startIntentForProcessingEmail();
+                        } else {
+                            Log.d(LOG_TAG, "Error createUser " + task.getException());
+                            String taskString = task.getException().toString();
+                            String message =
+                                    taskString.substring(taskString.lastIndexOf(":")).replace(":", "");
+                            Utils.toast(getApplicationContext(), message);
                         }
                         dissmisProgressDialog(mAuthProgressDialog);
                     }
                 });
     }
 
+
+    //Getting the default password from Firebase on your mail.
+    private void startIntentForProcessingEmail() {
+        Intent intent = new Intent((Intent.ACTION_MAIN));
+        intent.addCategory(Intent.CATEGORY_APP_EMAIL);
+        try {
+            startActivity(intent);
+            finish();
+        } catch (ActivityNotFoundException e) {
+            //if user does't have app to handle email
+            Utils.toast(getApplicationContext(),
+                    getString(R.string.install_app_for_processing_email));
+        }
+    }
+
+
     private void createUserInFirebaseHelper() {
         String unprocessedEmail = mUserEmail.toLowerCase();
         Utils.saveToSharedPreferences(Constants.KEY_EMAIL, unprocessedEmail, getApplicationContext());
         Utils.saveToSharedPreferences(Constants.KEY_NAME_OWNER_LIST, mUserName, getApplicationContext());
-
+        Utils.saveToSharedPreferences(Constants.KEY_SIGN_UP_EMAIL, unprocessedEmail, getApplicationContext());
         final String encodedEmail = Utils.encodeEmail(unprocessedEmail);
         createUserInFireBase(encodedEmail, mUserName);
         mAuth.signInWithEmailAndPassword(mUserEmail, mUserPassword);

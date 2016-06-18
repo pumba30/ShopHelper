@@ -19,9 +19,6 @@ import com.pundroid.shophelper.model.ShoppingList;
 import com.pundroid.shophelper.ui.activeListDetails.adapters.ActiveListAdapter;
 import com.pundroid.shophelper.ui.activity.ActiveListDetailsActivity;
 import com.pundroid.shophelper.utils.Constants;
-import com.pundroid.shophelper.utils.Utils;
-
-import java.util.Date;
 
 /**
  * Created by pumba30 on 29.05.2016.
@@ -94,15 +91,5 @@ public class ShoppingListsFragment extends Fragment {
 
     private void initializeScreen(View rootView) {
         mListView = (ListView) rootView.findViewById(R.id.list_view_active_lists);
-    }
-
-    private String getTextTimeStamp(ShoppingList shoppingList) {
-        if (shoppingList.getDateLastChanged() != null) {
-            Log.d(LOG_TAG, "getDateLastChanged != null");
-            return Utils.SIMPLE_DATE_FORMAT.format(new Date(shoppingList.getDateLastChangedLong()));
-        } else {
-            Log.d(LOG_TAG, "HashMap is null");
-            return "";
-        }
     }
 }

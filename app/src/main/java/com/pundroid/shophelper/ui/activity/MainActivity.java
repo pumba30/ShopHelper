@@ -26,6 +26,8 @@ import com.pundroid.shophelper.ui.activeListDetails.fragments.ShoppingListsFragm
 import com.pundroid.shophelper.ui.activity.login.LoginActivity;
 import com.pundroid.shophelper.ui.activeListDetails.fragments.AddMealDialogFragment;
 import com.pundroid.shophelper.ui.activeListDetails.fragments.MealsFragment;
+import com.pundroid.shophelper.utils.Constants;
+import com.pundroid.shophelper.utils.Utils;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -75,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
         if (id == R.id.action_logout) {
             clearUserData();
             //logout from Firebase
+            // FIXME: 17.06.2016 incorrect output from account
             FirebaseAuth.getInstance().signOut();
             Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -82,6 +85,20 @@ public class MainActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Utils.toast(getApplicationContext(), "ON Stop");
+        if (Utils.getUserProviderId().equals(Constants.PASSWORD_PROVIDER_ID)) {
+            String userEmail = Utils.getPreferencesValue
+                    (Constants.KEY_EMAIL, "", getApplicationContext());
+            Utils.saveToSharedPreferences
+                    (Constants.KEY_SIGN_UP_EMAIL, userEmail, getApplicationContext());
+        }
+    }
+
 
     private void clearUserData() {
         SharedPreferences preferences =

@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.view.Menu;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
@@ -23,7 +22,6 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.pundroid.shophelper.R;
 import com.pundroid.shophelper.ui.activity.BaseActivity;
@@ -43,7 +41,6 @@ public class LoginActivity extends BaseActivity {
     /* A dialog that is presented until the Firebase authentication finished. */
     private ProgressDialog mAuthProgressDialog;
     private EditText mEditTextEmailInput, mEditTextPasswordInput;
-    private FirebaseAuth mAuth;
     /* Request code used to invoke sign in user interactions for Google+ */
     public static final int RC_GOOGLE_SIGN_IN = 1;
     /* A Google account object that is populated if the user signs in with Google */
@@ -55,7 +52,7 @@ public class LoginActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        mAuth = FirebaseAuth.getInstance();
+
         initializeScreen();
 
         /**
@@ -73,58 +70,13 @@ public class LoginActivity extends BaseActivity {
         });
     }
 
-
     @Override
     public void onBackPressed() {
-       finish();
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        mAuth.addAuthStateListener(mAuthListener);
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        mAuth.removeAuthStateListener(mAuthListener);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        Log.d(LOG_TAG, "On Destroy");
-
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        return true;
+        finish();
     }
 
 
-    /**
-     * Sign in with Password provider when user clicks sign in button
-     */
-
-    public void onSignInPressed(View view) {
-        signInPassword();
-    }
-
-    /**
-     * Open CreateAccountActivity when user taps on "Sign up" TextView
-     */
+    // Open CreateAccountActivity when user taps on "Sign up" TextView
     public void onSignUpPressed(View view) {
         Intent intent = new Intent(getApplicationContext(), CreateAccountActivity.class);
         startActivity(intent);
@@ -137,6 +89,17 @@ public class LoginActivity extends BaseActivity {
                 = (LinearLayout) findViewById(R.id.linear_layout_login_activity);
         initializeBackground(linearLayoutLoginActivity);
 
+        setTextEmailInTextView();
+        TextView signInTextView = (TextView) findViewById(R.id.login_with_password);
+
+        if (signInTextView != null) {
+            signInTextView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    signInPassword();
+                }
+            });
+        }
         /* Setup the progress dialog that is displayed later when authenticating with Firebase */
         mAuthProgressDialog = new ProgressDialog(this);
         mAuthProgressDialog.setTitle(getString(R.string.progress_dialog_loading));
@@ -146,6 +109,19 @@ public class LoginActivity extends BaseActivity {
         setupGoogleSignIn();
     }
 
+    private void setTextEmailInTextView() {
+        if (Utils.getUserProviderId().equals(Constants.PASSWORD_PROVIDER_ID)) {
+            String email = Utils.getPreferencesValue(Constants.KEY_SIGN_UP_EMAIL, "", getApplicationContext());
+            mEditTextEmailInput.setText(email);
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setTextEmailInTextView();
+    }
+
     /**
      * Sign in with Password provider (used when user taps "Done" action on keyboard)
      */
@@ -153,33 +129,32 @@ public class LoginActivity extends BaseActivity {
         final String userEmail = mEditTextEmailInput.getText().toString();
         String userPassword = mEditTextPasswordInput.getText().toString();
 
-        if (!validateUserEmail(userEmail, mEditTextEmailInput)
-                || !validateUserPassword(userPassword, mEditTextPasswordInput)) {
+        if (!validateUserEmail(userEmail, mEditTextEmailInput)) {
             return;
         }
 
         mAuthProgressDialog.show();
         mAuth.signInWithEmailAndPassword(userEmail, userPassword)
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                if (!task.isSuccessful()) {
-                    String taskString = task.getException().toString();
-                    String message = taskString.substring(taskString.lastIndexOf(":")).replace(":", "");
-                    Toast.makeText(LoginActivity.this, message, Toast.LENGTH_LONG).show();
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (!task.isSuccessful()) {
+                            String taskString = task.getException().toString();
+                            String message = taskString.substring(taskString.lastIndexOf(":")).replace(":", "");
+                            Toast.makeText(LoginActivity.this, message, Toast.LENGTH_LONG).show();
 
-                } else {
-                    Log.d(LOG_TAG, "signInWhithEmail:onComplete:" + task.isSuccessful());
-                    Toast.makeText(LoginActivity.this, R.string.auth_successful,
-                            Toast.LENGTH_SHORT).show();
-                    String unprocessedEmail = userEmail.toLowerCase();
-                    Utils.saveToSharedPreferences(Constants.KEY_EMAIL,
-                            unprocessedEmail, getApplicationContext());
-                    startMainActivity();
-                }
-                dissmisProgressDialog(mAuthProgressDialog);
-            }
-        });
+                        } else {
+                            Log.d(LOG_TAG, "signInWhithEmail:onComplete:" + task.isSuccessful());
+                            Toast.makeText(LoginActivity.this, R.string.auth_successful,
+                                    Toast.LENGTH_SHORT).show();
+                            String unprocessedEmail = userEmail.toLowerCase();
+                            Utils.saveToSharedPreferences(Constants.KEY_EMAIL,
+                                    unprocessedEmail, getApplicationContext());
+                            startMainActivity();
+                        }
+                        dissmisProgressDialog(mAuthProgressDialog);
+                    }
+                });
     }
 
 
@@ -197,19 +172,15 @@ public class LoginActivity extends BaseActivity {
         }
     }
 
-    /**
-     * Sign in with Google plus when user clicks "Sign in with Google" textView (button)
-     */
+    // Sign in with Google plus when user clicks "Sign in with Google" textView (button)
     public void onSignInGooglePressed(View view) {
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
         startActivityForResult(signInIntent, RC_GOOGLE_SIGN_IN);
         mAuthProgressDialog.show();
     }
 
-    /**
-     * This callback is triggered when any startActivityForResult finishes. The requestCode maps to
-     * the value passed into startActivityForResult.
-     */
+    //This callback is triggered when any startActivityForResult finishes. The requestCode maps to
+    //the value passed into startActivityForResult.
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -228,18 +199,14 @@ public class LoginActivity extends BaseActivity {
             firebaseAuthWithGoogle(mGoogleAccount);
         } else {
             if (result.getStatus().getStatusCode() == GoogleSignInStatusCodes.SIGN_IN_CANCELLED) {
-                Toast.makeText(LoginActivity.this,
-                        "The sign in was cancelled. Make sure you're connected to the internet and try again.",
-                        Toast.LENGTH_SHORT).show();
+                Utils.toast(getApplicationContext(), getString(R.string.sign_in_cancelled));
             } else {
-                Toast.makeText(LoginActivity.this,
-                        "Error handling the sign in: " + result.getStatus().getStatusMessage(),
-                        Toast.LENGTH_SHORT).show();
+                Utils.toast(getApplicationContext(), getString(R.string.error_handling_sign_in)
+                        + result.getStatus().getStatusMessage());
             }
             mAuthProgressDialog.dismiss();
         }
     }
-
 
     private void firebaseAuthWithGoogle(final GoogleSignInAccount account) {
         Log.d(LOG_TAG, "firebaseAuthWithGoogle:" + account.getId());

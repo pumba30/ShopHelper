@@ -33,6 +33,8 @@ public class Constants {
     public static final String FIREBASE_PROPERTY_TIMESTAMP_LAST_CHANGED = "dateLastChanged";
     public static final String FIREBASE_PROPERTY_LIST_NAME = "listName";
     public static final String FIREBASE_PROPERTY_LIST_ITEM_NAME = "name";
+    public static final String FIREBASE_PROPERTY_EMAIL = "email";
+    public static final String FIREBASE_PROPERTY_USER_IS_LOGIN_WITH_PASSWORD = "isLoginWithPassword";
 
 
     //Constants for bundles, extras and shared preferences keys
@@ -43,6 +45,7 @@ public class Constants {
     public static final String KEY_ITEM_LIST_ID = "keyItemListId";
     public static final String KEY_ITEM_LIST_NAME = "keyItemListName";
     public static final String KEY_EMAIL = "key_email";
+    public static final String KEY_SIGN_UP_EMAIL = "key_sign_up_email";
     public static final String KEY_NAME_OWNER_LIST = "key_owner_list";
     public static final String KEY_IS_USER_OWNER = "is_user_owner";
 
