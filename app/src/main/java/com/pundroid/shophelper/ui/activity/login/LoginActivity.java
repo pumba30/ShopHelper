@@ -32,9 +32,6 @@ import com.pundroid.shophelper.utils.Utils;
  * Created by pumba30 on 04.06.2016.
  */
 
-/**
- * Represents Sign in screen and functionality of the app
- */
 public class LoginActivity extends BaseActivity {
 
     private static final String LOG_TAG = LoginActivity.class.getSimpleName();
@@ -52,12 +49,9 @@ public class LoginActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-
         initializeScreen();
 
-        /**
-         * Call signInPassword() when user taps "Done" keyboard action
-         */
+        //Call signInPassword() when user taps "Done" keyboard action
         mEditTextPasswordInput.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
@@ -100,7 +94,7 @@ public class LoginActivity extends BaseActivity {
                 }
             });
         }
-        /* Setup the progress dialog that is displayed later when authenticating with Firebase */
+
         mAuthProgressDialog = new ProgressDialog(this);
         mAuthProgressDialog.setTitle(getString(R.string.progress_dialog_loading));
         mAuthProgressDialog.setMessage(getString(R.string.progress_dialog_authenticating_with_firebase));
@@ -122,9 +116,8 @@ public class LoginActivity extends BaseActivity {
         setTextEmailInTextView();
     }
 
-    /**
-     * Sign in with Password provider (used when user taps "Done" action on keyboard)
-     */
+
+    // Sign in with Password provider (used when user taps "Done" action on keyboard)
     public void signInPassword() {
         final String userEmail = mEditTextEmailInput.getText().toString();
         String userPassword = mEditTextPasswordInput.getText().toString();
@@ -139,10 +132,11 @@ public class LoginActivity extends BaseActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (!task.isSuccessful()) {
-                            String taskString = task.getException().toString();
-                            String message = taskString.substring(taskString.lastIndexOf(":")).replace(":", "");
-                            Toast.makeText(LoginActivity.this, message, Toast.LENGTH_LONG).show();
-
+                            if (task.getException() != null) {
+                                String taskString = task.getException().toString();
+                                String message = taskString.substring(taskString.lastIndexOf(":")).replace(":", "");
+                                Toast.makeText(LoginActivity.this, message, Toast.LENGTH_LONG).show();
+                            }
                         } else {
                             Log.d(LOG_TAG, "signInWhithEmail:onComplete:" + task.isSuccessful());
                             Toast.makeText(LoginActivity.this, R.string.auth_successful,
@@ -184,7 +178,7 @@ public class LoginActivity extends BaseActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        /* Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...); */
+        // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
         if (requestCode == RC_GOOGLE_SIGN_IN) {
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
             handleSignInResult(result);
@@ -209,7 +203,7 @@ public class LoginActivity extends BaseActivity {
     }
 
     private void firebaseAuthWithGoogle(final GoogleSignInAccount account) {
-        Log.d(LOG_TAG, "firebaseAuthWithGoogle:" + account.getId());
+        Log.d(LOG_TAG, "firebaseAuthWithGoogle: " + account.getId());
         mCredentialGoogle = GoogleAuthProvider.getCredential(account.getIdToken(), null);
         mAuth.signInWithCredential(mCredentialGoogle)
                 .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
@@ -221,18 +215,20 @@ public class LoginActivity extends BaseActivity {
                                     Toast.LENGTH_SHORT).show();
                         } else {
                             Log.d(LOG_TAG, "signInWithCredential:onComplete:" + task.isSuccessful());
-                            String unprocessedEmail = account.getEmail().toLowerCase();
-                            Utils.saveToSharedPreferences(Constants.KEY_EMAIL,
-                                    unprocessedEmail, getApplicationContext());
-                            Utils.saveToSharedPreferences(Constants.KEY_NAME_OWNER_LIST,
-                                    account.getDisplayName(), getApplicationContext());
+                            if (account.getEmail() != null) {
+                                String unprocessedEmail = account.getEmail().toLowerCase();
+                                Utils.saveToSharedPreferences(Constants.KEY_EMAIL,
+                                        unprocessedEmail, getApplicationContext());
+                                Utils.saveToSharedPreferences(Constants.KEY_NAME_OWNER_LIST,
+                                        account.getDisplayName(), getApplicationContext());
 
-                            //Encode user email replacing "." with "," to be able to use it
-                            //as a Firebase db key
-                            String encodedEmail = Utils.encodeEmail(unprocessedEmail);
-                            String userName = account.getDisplayName();
-                            createUserInFireBase(encodedEmail, userName);
-                            startMainActivity();
+                                //Encode user email replacing "." with "," to be able to use it
+                                //as a Firebase db key
+                                String encodedEmail = Utils.encodeEmail(unprocessedEmail);
+                                String userName = account.getDisplayName();
+                                createUserInFireBase(encodedEmail, userName);
+                                startMainActivity();
+                            }
                         }
                         mAuthProgressDialog.dismiss();
                     }

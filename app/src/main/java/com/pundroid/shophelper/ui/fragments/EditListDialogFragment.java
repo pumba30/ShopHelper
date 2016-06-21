@@ -1,4 +1,4 @@
-package com.pundroid.shophelper.ui.activeListDetails.fragments;
+package com.pundroid.shophelper.ui.fragments;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -26,10 +26,9 @@ public abstract class EditListDialogFragment extends DialogFragment {
     protected String mListId;
     protected String mItemId;
 
-    /**
-     * Helper method that creates a basic bundle of all of the information needed to change
-     * values in a shopping list.
-     */
+
+    //Helper method that creates a basic bundle of all
+    // of the information needed to change values in a shopping list.
     protected static Bundle newInstanceHelper(ShoppingList shoppingList, int resource,
                                               String shoppingListId) {
         Bundle bundle = new Bundle();
@@ -56,17 +55,13 @@ public abstract class EditListDialogFragment extends DialogFragment {
     }
 
     protected Dialog createDialogHelper(int stringResourceForPositiveButton) {
-        /* Use the Builder class for convenient dialog construction */
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.CustomTheme_Dialog);
-        /* Get the layout inflater */
         LayoutInflater inflater = getActivity().getLayoutInflater();
-        /* Inflate the layout, set root ViewGroup to null*/
         View rootView = inflater.inflate(mResource, null);
         mEditTextForList = (EditText) rootView.findViewById(R.id.edit_text_list_dialog);
 
-        /**
-         * Call doListEdit() when user taps "Done" keyboard action
-         */
+
+        //Call doListEdit() when user taps "Done" keyboard action
         mEditTextForList.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
@@ -79,7 +74,6 @@ public abstract class EditListDialogFragment extends DialogFragment {
         });
 
         builder.setView(rootView)
-                /* Add action buttons */
                 .setPositiveButton(stringResourceForPositiveButton, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
@@ -97,10 +91,8 @@ public abstract class EditListDialogFragment extends DialogFragment {
         return builder.create();
     }
 
-    /**
-     * Set the EditText text to be the inputted text
-     * and put the pointer at the end of the input
-     */
+    //Set the EditText text to be the inputted text
+    //and put the pointer at the end of the input
     protected void helpSetDefaultValueEditText(String defaultText) {
         mEditTextForList.setText(defaultText);
         mEditTextForList.setSelection(defaultText.length());

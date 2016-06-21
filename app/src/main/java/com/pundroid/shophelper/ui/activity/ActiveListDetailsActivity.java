@@ -21,12 +21,16 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.pundroid.shophelper.R;
 import com.pundroid.shophelper.model.ShoppingList;
 import com.pundroid.shophelper.model.ShoppingListItem;
-import com.pundroid.shophelper.ui.activeListDetails.adapters.ActiveListItemAdapter;
-import com.pundroid.shophelper.ui.activeListDetails.fragments.AddListItemDialogFragment;
-import com.pundroid.shophelper.ui.activeListDetails.fragments.EditListItemNameDialogFragment;
-import com.pundroid.shophelper.ui.activeListDetails.fragments.EditListNameDialogFragment;
-import com.pundroid.shophelper.ui.activeListDetails.fragments.RemoveListDialogFragment;
+import com.pundroid.shophelper.ui.adapters.ActiveListItemAdapter;
+import com.pundroid.shophelper.ui.fragments.AddListItemDialogFragment;
+import com.pundroid.shophelper.ui.fragments.EditListItemNameDialogFragment;
+import com.pundroid.shophelper.ui.fragments.EditListNameDialogFragment;
+import com.pundroid.shophelper.ui.fragments.RemoveListDialogFragment;
 import com.pundroid.shophelper.utils.Constants;
+import com.pundroid.shophelper.utils.Utils;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by pumba30 on 30.05.2016.
@@ -96,6 +100,41 @@ public class ActiveListDetailsActivity extends BaseActivity {
                 return true;
             }
         });
+
+        //User purchased item
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if (view.getId() != R.id.list_view_footer_empty) {
+                    String itemId = mActiveListItemAdapter.getRef(position).getKey();
+                    ShoppingListItem itemShoppingList = mActiveListItemAdapter.getItem(position);
+                    String userEmail = Utils.getPreferencesValue(Constants.KEY_EMAIL, "", getApplicationContext());
+
+                    if (itemShoppingList != null) {
+                        Map<String, Object> updateBought = new HashMap<String, Object>();
+                        if (!itemShoppingList.isHasBought()) {
+                            updateBought.put(Constants.FIREBASE_PROPERTY_BOUGHT_BY_USER, userEmail);
+                            updateBought.put(Constants.FIREBASE_PROPERTY_HAS_BOUGHT, true);
+
+                            Firebase shoppingListRef = new Firebase
+                                    (Constants.FIREBASE_URL_SHOPPINGLIST_ITEMS).child(mShoppingListId);
+                            Firebase itemShoppingListRef = shoppingListRef.child(itemId);
+
+                            itemShoppingListRef.updateChildren(updateBought, new Firebase.CompletionListener() {
+                                @Override
+                                public void onComplete(FirebaseError firebaseError, Firebase firebase) {
+                                    if (firebaseError != null) {
+                                        Log.d(LOG_TAG, getString(R.string.log_error_updating_data)
+                                                + firebaseError.getDetails());
+                                    }
+                                }
+                            });
+                        }
+                    }
+                }
+            }
+        });
+
     }
 
     @Override
@@ -166,20 +205,25 @@ public class ActiveListDetailsActivity extends BaseActivity {
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
-        /* Inflate the footer, set root layout to null*/
         View footer = getLayoutInflater().inflate(R.layout.footer_empty, null);
         mListView.addFooterView(footer);
         mAddItemToListButton = (FloatingActionButton) findViewById(R.id.fab_detail_add_item);
-        mAddItemToListButton.setVisibility(View.VISIBLE);
-        if (!mIsUserOwner) {
-            mAddItemToListButton.setVisibility(View.INVISIBLE);
+
+        if (mAddItemToListButton != null) {
+            if (!mIsUserOwner) {
+                mAddItemToListButton.setVisibility(View.INVISIBLE);
+            } else {
+                mAddItemToListButton.setVisibility(View.VISIBLE);
+            }
         }
+
         mAddItemToListButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 showAddListItemDialog();
             }
         });
+
     }
 
     public void archiveList() {/*empty*/}
@@ -196,7 +240,6 @@ public class ActiveListDetailsActivity extends BaseActivity {
 
     // Show the add list item dialog when user taps "Add list item" fab
     public void showAddListItemDialog() {
-        /* Create an instance of the dialog fragment and show it */
         DialogFragment dialog = AddListItemDialogFragment.newInstance(mShoppingList, mShoppingListId);
         dialog.show(getSupportFragmentManager(), "AddListItemDialogFragment");
     }
@@ -204,7 +247,6 @@ public class ActiveListDetailsActivity extends BaseActivity {
 
     // Show edit list name dialog when user selects "Edit list name" menu item
     public void showEditListNameDialog() {
-        /* Create an instance of the dialog fragment and show it */
         DialogFragment dialog = EditListNameDialogFragment.newInstance(mShoppingList, mShoppingListId);
         dialog.show(getSupportFragmentManager(), "EditListNameDialogFragment");
     }
@@ -212,7 +254,6 @@ public class ActiveListDetailsActivity extends BaseActivity {
 
     // Show the edit list item name dialog after longClick on the particular item
     public void showEditListItemNameDialog(String itemName, String itemId) {
-        /* Create an instance of the dialog fragment and show it */
         Log.d(LOG_TAG, "Create Dialog EditItemListName");
         DialogFragment dialog = EditListItemNameDialogFragment.newInstance(mShoppingList, mShoppingListId, itemId, itemName);
         dialog.show(getSupportFragmentManager(), "EditListItemNameDialogFragment");

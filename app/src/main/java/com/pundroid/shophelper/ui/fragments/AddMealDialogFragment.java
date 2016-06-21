@@ -1,4 +1,4 @@
-package com.pundroid.shophelper.ui.activeListDetails.fragments;
+package com.pundroid.shophelper.ui.fragments;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -27,14 +27,13 @@ public class AddMealDialogFragment extends DialogFragment {
         addMealDialogFragment.setArguments(bundle);
         return addMealDialogFragment;
     }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
 
-    /**
-     * Open the keyboard automatically when the dialog fragment is opened
-     */
+    //Open the keyboard automatically when the dialog fragment is opened
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -43,16 +42,12 @@ public class AddMealDialogFragment extends DialogFragment {
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        /* Use the Builder class for convenient dialog construction */
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.CustomTheme_Dialog);
-        /* Get the layout inflater */
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View rootView = inflater.inflate(R.layout.dialog_add_meal, null);
         editTextMealName = (EditText) rootView.findViewById(R.id.edit_text_meal_name);
 
-        /**
-         * Call addMeal() when user taps "Done" keyboard action
-         */
+        //Call addMeal() when user taps "Done" keyboard action
         editTextMealName.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
@@ -63,10 +58,7 @@ public class AddMealDialogFragment extends DialogFragment {
             }
         });
 
-        /* Inflate and set the layout for the dialog */
-        /* Pass null as the parent view because its going in the dialog layout */
         builder.setView(rootView)
-                /* Add action buttons */
                 .setPositiveButton(R.string.positive_button_create, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
@@ -77,6 +69,5 @@ public class AddMealDialogFragment extends DialogFragment {
         return builder.create();
     }
 
-    private void addMeal() {
-    }
+    private void addMeal() {/*empty*/}
 }

@@ -52,7 +52,7 @@ public class BaseActivity extends AppCompatActivity implements GoogleApiClient.O
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        /* Setup the Google API object to allow Google logins */
+        // Setup the Google API object to allow Google logins
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
@@ -198,5 +198,5 @@ public class BaseActivity extends AppCompatActivity implements GoogleApiClient.O
 
 
     @Override
-    public void onConnectionFailed(ConnectionResult connectionResult) {/*empty*/}
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {/*empty*/}
 }

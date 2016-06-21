@@ -1,4 +1,4 @@
-package com.pundroid.shophelper.ui.activeListDetails.adapters;
+package com.pundroid.shophelper.ui.adapters;
 
 
 import android.app.Activity;

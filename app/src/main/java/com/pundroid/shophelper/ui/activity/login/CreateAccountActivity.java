@@ -27,9 +27,6 @@ import java.security.SecureRandom;
  * Created by pumba30 on 04.06.2016.
  */
 
-/**
- * Represents Sign up screen and functionality of the app
- */
 public class
 CreateAccountActivity extends BaseActivity {
     private static final String LOG_TAG = CreateAccountActivity.class.getSimpleName();
@@ -67,7 +64,7 @@ CreateAccountActivity extends BaseActivity {
                 = (LinearLayout) findViewById(R.id.linear_layout_create_account_activity);
         initializeBackground(linearLayoutCreateAccountActivity);
 
-        /* Setup the progress dialog that is displayed later when authenticating with Firebase */
+        // Setup the progress dialog that is displayed later when authenticating with Firebase
         mAuthProgressDialog = new ProgressDialog(this);
         mAuthProgressDialog.setTitle(getResources().getString(R.string.progress_dialog_loading));
         mAuthProgressDialog.setMessage(getResources().getString(R.string.progress_dialog_creating_user_with_firebase));
@@ -76,7 +73,6 @@ CreateAccountActivity extends BaseActivity {
 
 
     //Open LoginActivity when user taps on "Sign in" textView
-
     public void onSignInPressed() {
         Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -84,9 +80,8 @@ CreateAccountActivity extends BaseActivity {
         finish();
     }
 
-    /**
-     * Create new account using Firebase email/password provider
-     */
+
+     // Create new account using Firebase email/password provider
     public void onCreateAccountPressed(final View view) {
         mUserName = mEditTextUsernameCreate.getText().toString();
         mUserEmail = mEditTextEmailCreate.getText().toString().toLowerCase();

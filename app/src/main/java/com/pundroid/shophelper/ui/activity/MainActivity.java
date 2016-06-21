@@ -21,11 +21,11 @@ import android.view.View;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.pundroid.shophelper.R;
-import com.pundroid.shophelper.ui.activeListDetails.fragments.AddListDialogFragment;
-import com.pundroid.shophelper.ui.activeListDetails.fragments.ShoppingListsFragment;
+import com.pundroid.shophelper.ui.fragments.AddListDialogFragment;
+import com.pundroid.shophelper.ui.fragments.ShoppingListsFragment;
 import com.pundroid.shophelper.ui.activity.login.LoginActivity;
-import com.pundroid.shophelper.ui.activeListDetails.fragments.AddMealDialogFragment;
-import com.pundroid.shophelper.ui.activeListDetails.fragments.MealsFragment;
+import com.pundroid.shophelper.ui.fragments.AddMealDialogFragment;
+import com.pundroid.shophelper.ui.fragments.MealsFragment;
 import com.pundroid.shophelper.utils.Constants;
 import com.pundroid.shophelper.utils.Utils;
 
@@ -90,7 +90,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        Utils.toast(getApplicationContext(), "ON Stop");
         if (Utils.getUserProviderId().equals(Constants.PASSWORD_PROVIDER_ID)) {
             String userEmail = Utils.getPreferencesValue
                     (Constants.KEY_EMAIL, "", getApplicationContext());

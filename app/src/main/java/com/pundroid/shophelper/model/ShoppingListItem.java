@@ -6,6 +6,8 @@ package com.pundroid.shophelper.model;
 public class ShoppingListItem {
     private String owner;
     private String name;
+    private String boughtBy;
+    private boolean hasBought;
 
     public ShoppingListItem() {
     }
@@ -14,6 +16,8 @@ public class ShoppingListItem {
     public ShoppingListItem(String name, String userOwner) {
         this.name = name;
         this.owner = userOwner;
+        this.boughtBy = null;
+        this.hasBought = false;
     }
 
 
@@ -23,5 +27,13 @@ public class ShoppingListItem {
 
     public String getName() {
         return name;
+    }
+
+    public boolean isHasBought() {
+        return hasBought;
+    }
+
+    public String getBoughtBy() {
+        return boughtBy;
     }
 }

@@ -35,6 +35,8 @@ public class Constants {
     public static final String FIREBASE_PROPERTY_LIST_ITEM_NAME = "name";
     public static final String FIREBASE_PROPERTY_EMAIL = "email";
     public static final String FIREBASE_PROPERTY_USER_IS_LOGIN_WITH_PASSWORD = "isLoginWithPassword";
+    public static final String FIREBASE_PROPERTY_BOUGHT_BY_USER = "boughtBy";
+    public static final String FIREBASE_PROPERTY_HAS_BOUGHT = "hasBought";
 
 
     //Constants for bundles, extras and shared preferences keys

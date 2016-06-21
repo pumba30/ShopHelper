@@ -1,4 +1,4 @@
-package com.pundroid.shophelper.ui.activeListDetails.fragments;
+package com.pundroid.shophelper.ui.fragments;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -19,9 +19,6 @@ public class RemoveListDialogFragment extends DialogFragment {
     final static String LOG_TAG = RemoveListDialogFragment.class.getSimpleName();
     private String mShoppingListId;
 
-    /**
-     * Public static constructor that creates fragment and passes a bundle with data into it when adapter is created
-     */
     public static RemoveListDialogFragment newInstance(ShoppingList shoppingList, String listId) {
         RemoveListDialogFragment removeListDialogFragment = new RemoveListDialogFragment();
         Bundle bundle = new Bundle();
@@ -30,9 +27,6 @@ public class RemoveListDialogFragment extends DialogFragment {
         return removeListDialogFragment;
     }
 
-    /**
-     * Initialize instance variables with data from bundle
-     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,13 +41,11 @@ public class RemoveListDialogFragment extends DialogFragment {
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         removeList();
-                        /* Dismiss the dialog */
                         dialog.dismiss();
                     }
                 })
                 .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        /* Dismiss the dialog */
                         dialog.dismiss();
                     }
                 })

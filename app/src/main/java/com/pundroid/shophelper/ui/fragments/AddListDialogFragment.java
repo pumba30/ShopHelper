@@ -1,8 +1,9 @@
-package com.pundroid.shophelper.ui.activeListDetails.fragments;
+package com.pundroid.shophelper.ui.fragments;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.view.KeyEvent;
@@ -31,11 +32,6 @@ public class AddListDialogFragment extends DialogFragment {
     private EditText mEditTextListName;
     private String mOwner;
 
-
-    /**
-     * Public static constructor that creates fragment and
-     * passes a bundle with data into it when adapter is created
-     */
     public static AddListDialogFragment newInstance() {
         AddListDialogFragment addListDialogFragment = new AddListDialogFragment();
         Bundle bundle = new Bundle();
@@ -43,36 +39,27 @@ public class AddListDialogFragment extends DialogFragment {
         return addListDialogFragment;
     }
 
-    /**
-     * Initialize instance variables with data from bundle
-     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mOwner = Utils.getPreferencesValue(Constants.KEY_EMAIL, "", getActivity());
     }
 
-    /**
-     * Open the keyboard automatically when the dialog fragment is opened
-     */
+    //Open the keyboard automatically when the dialog fragment is opened
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
     }
 
+    @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        // Use the Builder class for convenient dialog construction
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.CustomTheme_Dialog);
-        // Get the layout inflater
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View rootView = inflater.inflate(R.layout.dialog_add_list, null);
         mEditTextListName = (EditText) rootView.findViewById(R.id.edit_text_list_name);
 
-        /**
-         * Call addShoppingList() when user taps "Done" keyboard action
-         */
         mEditTextListName.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
@@ -83,10 +70,7 @@ public class AddListDialogFragment extends DialogFragment {
             }
         });
 
-        /* Inflate and set the layout for the dialog */
-        /* Pass null as the parent view because its going in the dialog layout*/
         builder.setView(rootView)
-                /* Add action buttons */
                 .setPositiveButton(R.string.positive_button_create, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
@@ -97,9 +81,7 @@ public class AddListDialogFragment extends DialogFragment {
         return builder.create();
     }
 
-    /**
-     * Add new active list
-     */
+    //Add new active list
     public void addShoppingList() {
         String userEnteredName = mEditTextListName.getText().toString();
 
@@ -116,6 +98,4 @@ public class AddListDialogFragment extends DialogFragment {
             AddListDialogFragment.this.getDialog().cancel();
         }
     }
-
-
 }

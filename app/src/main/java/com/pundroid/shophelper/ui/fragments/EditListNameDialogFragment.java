@@ -1,9 +1,8 @@
-package com.pundroid.shophelper.ui.activeListDetails.fragments;
+package com.pundroid.shophelper.ui.fragments;
 
 import android.app.Dialog;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
@@ -29,7 +28,7 @@ public class EditListNameDialogFragment extends EditListDialogFragment {
      */
     public static EditListNameDialogFragment newInstance(ShoppingList shoppingList, String shoppingListId) {
         EditListNameDialogFragment editListNameDialogFragment = new EditListNameDialogFragment();
-        Bundle bundle = EditListDialogFragment.newInstanceHelper(shoppingList, R.layout.dialog_edit_list, shoppingListId);
+        Bundle bundle = newInstanceHelper(shoppingList, R.layout.dialog_edit_list, shoppingListId);
         editListNameDialogFragment.setArguments(bundle);
         return editListNameDialogFragment;
     }
@@ -65,25 +64,22 @@ public class EditListNameDialogFragment extends EditListDialogFragment {
         return dialog;
     }
 
-    /**
-     * Changes the list name in all copies of the current list
-     */
+
+    // Changes the list name in all copies of the current list
     protected void doListEdit() {
         final String nameListLast = mEditTextForList.getText().toString();
         if (!nameListLast.equals("")) {
             if (mShoppingListName != null) {
                 if (!nameListLast.equals(mShoppingListName)) {
-                    Toast.makeText(getActivity(), "NOT EQuals", Toast.LENGTH_SHORT).show();
                     writeNameListInFirebase(nameListLast);
                 }
             }
         }
     }
 
-    /**
-     * title update in shopping list
-     * update at the same time time stamp
-     */
+
+    //title update in shopping list
+    //update at the same time time stamp
     private void writeNameListInFirebase(String nameListChanged) {
         Firebase firebaseRef = new Firebase(Constants.FIREBASE_URL_ACTIVE_LISTS).child(mShoppingListId);
 
@@ -100,7 +96,7 @@ public class EditListNameDialogFragment extends EditListDialogFragment {
             @Override
             public void onComplete(FirebaseError firebaseError, Firebase firebase) {
                 if (firebaseError != null) {
-                    System.out.println("Data could not be saved. " + firebaseError.getMessage());
+                    Log.d(LOG_TAG, "Data could not be saved. " + firebaseError.getMessage());
                 } else {
                     Log.i(LOG_TAG, "Data saved successfully.");
                 }
