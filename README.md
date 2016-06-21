@@ -10,3 +10,4 @@
 * When entering a foreign list make inaccessible items "Delete", "Edit", "Share", "Add" button
 * If bought item - strike-through item name, 
 * Write someone was purchased item in the list
+*
